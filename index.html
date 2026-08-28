@@ -1,13 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workshop Github</title>
+    <meta name="description" content="Um guia visual e direto para entender os principais conceitos do GitHub.">
+    <title>GitHub em prática | COTI Informática</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --ink: #10232c;
+            --muted: #58707a;
+            --paper: #f4f7f2;
+            --white: #ffffff;
+            --line: #d7e3df;
+            --green: #b8e241;
+            --green-dark: #3d631d;
+            --blue: #2f6776;
+            --coral: #f2765b;
+            --shadow: 0 18px 50px rgba(16, 35, 44, .09);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; color: var(--ink); background: var(--paper); font-family: 'Space Grotesk', sans-serif; }
+        a { color: inherit; text-decoration: none; }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .mono { font-family: 'DM Mono', monospace; }
+
+        header { padding: 22px 0; border-bottom: 1px solid rgba(215, 227, 223, .8); background: rgba(244, 247, 242, .9); position: sticky; top: 0; z-index: 5; backdrop-filter: blur(12px); }
+        .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.03em; }
+        .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; color: var(--white); background: var(--ink); border-radius: 9px; font-size: 19px; }
+        nav { display: flex; gap: 26px; color: var(--muted); font-size: 14px; font-weight: 500; }
+        nav a:hover { color: var(--ink); }
+        .nav-cta { padding: 11px 16px; color: var(--white); background: var(--ink); border-radius: 7px; font-size: 13px; font-weight: 600; }
+        .menu-button { display: none; border: 0; background: none; font-size: 24px; cursor: pointer; }
+
+        .hero { position: relative; overflow: hidden; padding: 100px 0 112px; background: var(--paper); }
+        .hero::after { content: ''; position: absolute; width: 440px; height: 440px; right: -170px; top: -180px; border: 1px solid rgba(47, 103, 118, .14); border-radius: 50%; box-shadow: 0 0 0 45px rgba(47, 103, 118, .04), 0 0 0 90px rgba(47, 103, 118, .035); }
+        .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 74px; position: relative; z-index: 1; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px; color: var(--green-dark); font: 500 12px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+        .eyebrow::before { content: ''; width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+        h1 { max-width: 650px; margin: 0; font-size: clamp(3.2rem, 7vw, 6.4rem); line-height: .94; letter-spacing: -.075em; }
+        h1 em { color: var(--blue); font-style: normal; }
+        .hero-copy { max-width: 490px; margin: 27px 0 0; color: var(--muted); font-size: 18px; line-height: 1.55; }
+        .hero-actions { display: flex; align-items: center; gap: 17px; margin-top: 34px; }
+        .button { display: inline-flex; align-items: center; gap: 9px; padding: 14px 18px; border: 1px solid var(--ink); border-radius: 7px; font-weight: 600; font-size: 14px; cursor: pointer; }
+        .button.primary { color: var(--white); background: var(--ink); }
+        .button.secondary { border-color: var(--line); background: transparent; }
+        .button:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+        .branch-card { padding: 28px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); border-radius: 12px; }
+        .terminal-top { display: flex; gap: 7px; margin-bottom: 25px; }
+        .terminal-top span { width: 8px; height: 8px; border-radius: 50%; background: #d6e0da; }
+        .terminal-top span:first-child { background: var(--coral); }
+        .terminal-label { margin-bottom: 22px; color: var(--muted); font: 12px 'DM Mono', monospace; }
+        .graph { display: grid; grid-template-columns: 24px 1fr; gap: 14px; }
+        .graph-line { position: relative; display: flex; flex-direction: column; align-items: center; gap: 27px; }
+        .graph-line::before { content: ''; position: absolute; top: 7px; bottom: 7px; width: 2px; background: var(--blue); }
+        .node { z-index: 1; width: 14px; height: 14px; border: 3px solid var(--white); outline: 2px solid var(--blue); background: var(--green); border-radius: 50%; }
+        .node:nth-child(2) { background: var(--coral); }
+        .commit { display: flex; justify-content: space-between; gap: 15px; min-height: 41px; padding-bottom: 19px; border-bottom: 1px dashed var(--line); font-size: 13px; }
+        .commit:last-child { border: 0; }
+        .commit strong { display: block; margin-bottom: 5px; font-size: 14px; }
+        .commit small { color: var(--muted); }
+        .hash { color: var(--blue); font: 12px 'DM Mono', monospace; }
+
+        section { padding: 96px 0; }
+        .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 38px; }
+        .kicker { margin: 0 0 13px; color: var(--blue); font: 500 12px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .06em; }
+        h2 { max-width: 600px; margin: 0; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -.06em; }
+        .section-intro { max-width: 305px; margin: 0; color: var(--muted); line-height: 1.5; }
+        .concepts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .concept { min-height: 240px; padding: 25px; border: 1px solid var(--line); background: var(--white); border-radius: 9px; transition: transform .2s, box-shadow .2s; }
+        .concept:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+        .concept-number { color: var(--blue); font: 13px 'DM Mono', monospace; }
+        .concept h3 { margin: 36px 0 12px; font-size: 22px; letter-spacing: -.04em; }
+        .concept p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+        .workflow { background: var(--ink); color: var(--white); }
+        .workflow .kicker { color: var(--green); }
+        .workflow-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 80px; align-items: start; }
+        .workflow h2 { color: var(--white); }
+        .workflow-copy { color: #a8bbc0; line-height: 1.6; }
+        .steps { border-top: 1px solid #38505a; }
+        .step { display: grid; grid-template-columns: 48px 1fr; gap: 18px; padding: 23px 0; border-bottom: 1px solid #38505a; }
+        .step-no { color: var(--green); font: 13px 'DM Mono', monospace; }
+        .step h3 { margin: 0 0 7px; font-size: 19px; }
+        .step p { margin: 0; color: #a8bbc0; font-size: 14px; line-height: 1.5; }
+
+        .glossary { background: #e6efea; }
+        .glossary-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 50px; border-top: 1px solid #bfd0c8; }
+        .term { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 20px 0; border-bottom: 1px solid #bfd0c8; font-size: 14px; }
+        .term strong { color: var(--blue); }
+        .term span { color: var(--muted); line-height: 1.45; }
+        footer { padding: 27px 0; color: #a8bbc0; background: var(--ink); font-size: 13px; }
+        footer .wrap { display: flex; justify-content: space-between; gap: 20px; }
+
+        @media (max-width: 760px) {
+            .wrap { width: min(100% - 28px, 560px); }
+            header { padding: 15px 0; }
+            nav { display: none; position: absolute; left: 14px; right: 14px; top: 65px; flex-direction: column; gap: 0; padding: 8px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); border-radius: 8px; }
+            nav.open { display: flex; }
+            nav a { padding: 13px; }
+            .nav-cta { display: none; }
+            .menu-button { display: block; color: var(--ink); }
+            .hero { padding: 65px 0 75px; }
+            .hero-grid, .workflow-grid { grid-template-columns: 1fr; gap: 45px; }
+            h1 { font-size: clamp(3.3rem, 18vw, 5.5rem); }
+            .hero-copy { font-size: 16px; }
+            .branch-card { padding: 20px; }
+            section { padding: 70px 0; }
+            .section-head { display: block; }
+            .section-intro { margin-top: 20px; }
+            .concepts, .glossary-list { grid-template-columns: 1fr; }
+            .concept { min-height: auto; }
+            .concept h3 { margin-top: 25px; }
+            .term { grid-template-columns: 105px 1fr; gap: 12px; }
+            footer .wrap { display: block; }
+            footer p:last-child { margin-bottom: 0; }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="wrap nav">
+            <a class="brand" href="#inicio" aria-label="GitHub em prática, início"><span class="brand-mark">⌘</span> GitHub em prática</a>
+            <nav id="main-nav">
+                <a href="#conceitos">Conceitos</a>
+                <a href="#fluxo">Fluxo de trabalho</a>
+                <a href="#glossario">Glossário</a>
+            </nav>
+            <a class="nav-cta" href="#fluxo">Começar agora <span aria-hidden="true">↗</span></a>
+            <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        </div>
+    </header>
 
-    <h2>Workshop - Github COTI Informática</h2>
-    
+    <main>
+        <section class="hero" id="inicio">
+            <div class="wrap hero-grid">
+                <div>
+                    <div class="eyebrow">Workshop COTI Informática</div>
+                    <h1>Seu código.<br><em>Sua história.</em></h1>
+                    <p class="hero-copy">GitHub é o lugar onde ideias viram software. Entenda os conceitos essenciais para colaborar, acompanhar mudanças e publicar projetos com confiança.</p>
+                    <div class="hero-actions">
+                        <a class="button primary" href="#conceitos">Explorar conceitos <span aria-hidden="true">↓</span></a>
+                        <a class="button secondary" href="#fluxo">Ver o fluxo</a>
+                    </div>
+                </div>
+                <div class="branch-card" aria-label="Exemplo visual de histórico de commits">
+                    <div class="terminal-top"><span></span><span></span><span></span></div>
+                    <div class="terminal-label">~/projetos/minha-aplicação · git log</div>
+                    <div class="graph">
+                        <div class="graph-line"><i class="node"></i><i class="node"></i><i class="node"></i></div>
+                        <div>
+                            <div class="commit"><div><strong>feat: nova tela de perfil</strong><small>Marina · há 2 min</small></div><span class="hash">a4f92c</span></div>
+                            <div class="commit"><div><strong>fix: validação do formulário</strong><small>Rafael · há 1 h</small></div><span class="hash">b81d03</span></div>
+                            <div class="commit"><div><strong>chore: início do projeto</strong><small>Você · ontem</small></div><span class="hash">09cd71</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conceitos">
+            <div class="wrap">
+                <div class="section-head"><div><p class="kicker">01 / A base</p><h2>As peças que fazem tudo funcionar.</h2></div><p class="section-intro">Cada conceito resolve uma parte da colaboração. Juntos, eles criam um fluxo claro para qualquer equipe.</p></div>
+                <div class="concepts">
+                    <article class="concept"><span class="concept-number">01</span><h3>Repositório</h3><p>A casa do seu projeto. Guarda arquivos, histórico de alterações, documentação e as regras para colaborar.</p></article>
+                    <article class="concept"><span class="concept-number">02</span><h3>Commit</h3><p>Um registro pontual de mudança. Bons commits contam o que foi feito e deixam o histórico fácil de entender.</p></article>
+                    <article class="concept"><span class="concept-number">03</span><h3>Branch</h3><p>Uma linha de trabalho independente. Crie, experimente e corrija sem afetar a versão principal.</p></article>
+                    <article class="concept"><span class="concept-number">04</span><h3>Pull Request</h3><p>O convite para revisar e integrar uma mudança. É onde o time conversa antes do código entrar na base.</p></article>
+                    <article class="concept"><span class="concept-number">05</span><h3>Issue</h3><p>Um espaço para organizar tarefas, bugs e ideias. Transforme conversas soltas em trabalho rastreável.</p></article>
+                    <article class="concept"><span class="concept-number">06</span><h3>GitHub Actions</h3><p>Automação dentro do repositório: testes, builds e deploys que acontecem sempre que algo muda.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow" id="fluxo">
+            <div class="wrap workflow-grid">
+                <div><p class="kicker">02 / Na prática</p><h2>Da ideia ao código integrado.</h2><p class="workflow-copy">Um fluxo simples transforma colaboração em hábito. O time sabe onde começar, onde revisar e quando entregar.</p></div>
+                <div class="steps">
+                    <div class="step"><span class="step-no">01</span><div><h3>Clone o repositório</h3><p>Traga uma cópia do projeto para sua máquina e prepare o ambiente local.</p></div></div>
+                    <div class="step"><span class="step-no">02</span><div><h3>Crie uma branch</h3><p>Separe seu trabalho com um nome que explique a tarefa: <span class="mono">feature/perfil</span>.</p></div></div>
+                    <div class="step"><span class="step-no">03</span><div><h3>Faça commits claros</h3><p>Salve pequenas mudanças com mensagens objetivas e fáceis de localizar.</p></div></div>
+                    <div class="step"><span class="step-no">04</span><div><h3>Abra um Pull Request</h3><p>Peça feedback, revise os arquivos e integre a solução quando estiver pronta.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glossary" id="glossario">
+            <div class="wrap">
+                <div class="section-head"><div><p class="kicker">03 / Para consultar</p><h2>Um vocabulário para não travar.</h2></div></div>
+                <div class="glossary-list">
+                    <div class="term"><strong>Fork</strong><span>Cópia de um repositório na sua conta para propor mudanças em outro projeto.</span></div>
+                    <div class="term"><strong>Merge</strong><span>Ação de unir o conteúdo de duas branches em uma só.</span></div>
+                    <div class="term"><strong>Remote</strong><span>Endereço que conecta seu projeto local ao repositório hospedado.</span></div>
+                    <div class="term"><strong>README</strong><span>Documento de entrada que explica o propósito e o uso do projeto.</span></div>
+                    <div class="term"><strong>Review</strong><span>Leitura colaborativa do código para encontrar melhorias antes da integração.</span></div>
+                    <div class="term"><strong>Deploy</strong><span>Publicação do código em um ambiente onde outras pessoas podem acessá-lo.</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer><div class="wrap"><p>Workshop GitHub · COTI Informática</p><p class="mono">aprenda · colabore · entregue</p></div></footer>
+
+    <script>
+        const menuButton = document.querySelector('#menu-button');
+        const mainNav = document.querySelector('#main-nav');
+        menuButton.addEventListener('click', () => {
+            const isOpen = mainNav.classList.toggle('open');
+            menuButton.setAttribute('aria-expanded', isOpen);
+            menuButton.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+            menuButton.textContent = isOpen ? '×' : '☰';
+        });
+        mainNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+            mainNav.classList.remove('open');
+            menuButton.setAttribute('aria-expanded', 'false');
+            menuButton.setAttribute('aria-label', 'Abrir menu');
+            menuButton.textContent = '☰';
+        }));
+    </script>
 </body>
 </html>
